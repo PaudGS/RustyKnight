@@ -91,11 +91,61 @@ fn mask_pawn_attacks(square: u8, side: u8) -> u64 {
     attacks
 }
 
+// Knight attack table
+
+fn mask_knight_attacks(square: u8) -> u64 {
+
+    // piece bitboard
+    let mut bitboard: u64 = 0u64;
+
+    // attack bitboard
+    let mut attacks: u64 = 0u64;
+
+    set_bit!(bitboard, square);
+
+    if bitboard >> 17 & NOT_H_FILE != 0 {attacks |= bitboard >> 17;}
+    if bitboard >> 15 & NOT_A_FILE != 0 {attacks |= bitboard >> 15;}
+    if bitboard >> 10 & NOT_HG_FILES != 0 {attacks |= bitboard >> 10;}
+    if bitboard >> 6 & NOT_AB_FILES != 0 {attacks |= bitboard >> 6;}
+
+    if bitboard << 17 & NOT_A_FILE != 0 {attacks |= bitboard << 17;}
+    if bitboard << 15 & NOT_H_FILE != 0 {attacks |= bitboard << 15;}
+    if bitboard << 10 & NOT_AB_FILES != 0 {attacks |= bitboard << 10;}
+    if bitboard << 6 & NOT_HG_FILES != 0 {attacks |= bitboard << 6;}
+
+    attacks
+}
+
+// King attack table
+
+fn mask_king_attacks(square: u8) -> u64 {
+
+    // piece bitboard
+    let mut bitboard: u64 = 0u64;
+
+    // attack bitboard
+    let mut attacks: u64 = 0u64;
+
+    set_bit!(bitboard, square);
+
+    if bitboard >> 8 != 0 {attacks |= bitboard >> 8;}
+    if bitboard >> 9 & NOT_H_FILE != 0 {attacks |= bitboard >> 9;}
+    if bitboard >> 7 & NOT_A_FILE != 0 {attacks |= bitboard >> 7;}
+    if bitboard >> 1 & NOT_H_FILE != 0 {attacks |= bitboard >> 1;}
+
+    if bitboard << 8 != 0 {attacks |= bitboard << 8;}
+    if bitboard << 9 & NOT_A_FILE != 0 {attacks |= bitboard << 9;}
+    if bitboard << 7 & NOT_H_FILE != 0 {attacks |= bitboard << 7;}
+    if bitboard << 1 & NOT_A_FILE != 0 {attacks |= bitboard << 1;}
+
+    attacks
+}
+
 // init leaper pieces attacks
 //
 //
 
-fn init_leaper_attacks() -> [[u64 ; 64]; 2]{
+fn init_pawn_attacks() -> [[u64 ; 64]; 2] {
 
     let mut pawn_attacks: [[u64 ; 64]; 2] = [[0u64; 64]; 2];
 
@@ -108,6 +158,27 @@ fn init_leaper_attacks() -> [[u64 ; 64]; 2]{
     pawn_attacks
 }
 
+fn init_knight_attacks() -> [u64 ; 64] {
+
+    let mut knight_attacks: [u64 ; 64] = [0u64; 64];
+
+    for square in 0..64 {
+        knight_attacks[square] = mask_knight_attacks(square as u8);
+    }
+
+    knight_attacks
+}
+
+fn init_king_attacks() -> [u64 ; 64] {
+
+    let mut king_attacks: [u64 ; 64] = [0u64; 64];
+
+    for square in 0..64 {
+        king_attacks[square] = mask_king_attacks(square as u8);
+    }
+
+    king_attacks
+}
 
 // Main function
 //
@@ -116,11 +187,15 @@ fn init_leaper_attacks() -> [[u64 ; 64]; 2]{
 fn main() {
     println!("\n\n Welcome to Rusty Knight \n\n");
 
-    let pawn_attacks = init_leaper_attacks();
+    let pawn_attacks = init_pawn_attacks();
+    let knight_attacks = init_knight_attacks();
+    let king_attacks = init_king_attacks();
 
-    let side = Sides::White as usize;
+    let square = Squares::B1 as u8;
+    let side = Sides::White as u8;
 
-    for square in 0..64 {
-        print_bitboard(pawn_attacks[side][square]);
-    }
+    let king_attack = mask_king_attacks(square);
+
+    print_bitboard(king_attack);
+
 }
