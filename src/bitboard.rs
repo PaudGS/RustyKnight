@@ -164,6 +164,8 @@ pub fn mask_bishop_attacks(square: u8) -> u64 {
     attacks
 }
 
+//Bishop attack table considering possible blocks
+
 pub fn bishop_attacks_on_the_fly(square: u8, block: u64) -> u64 {
 
     let mut attacks: u64 = 0u64;
@@ -208,31 +210,34 @@ pub fn mask_rook_attacks(square: u8) -> u64 {
     attacks
 }
 
+//Rook attack table considering possible blocks
+
 pub fn rook_attacks_on_the_fly(square: u8, block: u64) -> u64 {
 
-        let mut attacks: u64 = 0u64;
+    let mut attacks: u64 = 0u64;
 
-        let tr: i8 = square as i8 / 8;
-        let tf: i8 = square as i8 % 8;
+    let tr: i8 = square as i8 / 8;
+    let tf: i8 = square as i8 % 8;
 
-        for rank in tr + 1..=7 {
-            attacks |= 1u64 << (rank * 8 + tf);
-            if 1u64 << (rank * 8 + tf) & block != 0 {break;}
-        }
-        for rank in (0..=tr - 1).rev() {
-            attacks |= 1u64 << (rank * 8 + tf);
-            if 1u64 << (rank * 8 + tf) & block != 0 {break;}
-        }
-        for file in tf +1..=7 {
-            attacks |= 1u64 << (tr * 8 + file);
-            if 1u64 << (tr * 8 + file) & block != 0 {break;}
-        }
-        for file in (0..=tf - 1).rev() {
-            attacks |= 1u64 << (tr * 8 + file);
-            if 1u64 << (tr * 8 + file) & block != 0 {break;}
-        }
+    for rank in tr + 1..=7 {
+        attacks |= 1u64 << (rank * 8 + tf);
+        if 1u64 << (rank * 8 + tf) & block != 0 {break;}
+    }
+    for rank in (0..=tr - 1).rev() {
+        attacks |= 1u64 << (rank * 8 + tf);
+        if 1u64 << (rank * 8 + tf) & block != 0 {break;}
+    }
+    for file in tf +1..=7 {
+        attacks |= 1u64 << (tr * 8 + file);
+        if 1u64 << (tr * 8 + file) & block != 0 {break;}
+    }
+    for file in (0..=tf - 1).rev() {
+        attacks |= 1u64 << (tr * 8 + file);
+        if 1u64 << (tr * 8 + file) & block != 0 {break;}
+    }
 
-        attacks
+    attacks
+
 }
 
 // init leaper pieces attacks
