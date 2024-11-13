@@ -41,6 +41,22 @@ macro_rules! pop_bit {
     };
 }
 
+// Count set bits in bitboard
+#[macro_export]
+macro_rules! count_bits {
+    ($bitboard : ident) => {
+        $bitboard.count_ones()
+    }
+}
+
+// Get least significant 1st bit index
+#[macro_export]
+macro_rules! ls1b {
+    ($bitboard : ident) => {
+        if $bitboard == 0u64 { None } else { Some($bitboard.trailing_zeros()) }
+    }
+}
+
 // Bitboard representation
 pub fn print_bitboard(bitboard: u64) {
     // loop over ranks
@@ -238,6 +254,23 @@ pub fn rook_attacks_on_the_fly(square: u8, block: u64) -> u64 {
 
     attacks
 
+}
+
+// Computes all different attack patterns with blocks depending on index value for attack_mask
+pub fn set_occupancy(index: u32, bits_in_mask: u32, mut attack_mask: u64) -> u64 {
+
+    let mut occupancy = 0u64;
+
+    for i in 0..bits_in_mask {
+        if let Some(square) = ls1b!(attack_mask){
+            pop_bit!(attack_mask, square);
+
+            if index & (1 << i) != 0 {
+                occupancy |= 1u64 << square;
+            }
+        }
+    }
+    occupancy
 }
 
 // init leaper pieces attacks

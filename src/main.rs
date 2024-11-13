@@ -15,25 +15,12 @@ fn main() {
     let knight_attacks = bitboard::init_knight_attacks();
     let king_attacks = bitboard::init_king_attacks();
 
-    let square = bitboard::Squares::E5 as u8;
+    let square = bitboard::Squares::A1 as u8;
     let side = bitboard::Sides::White as u8;
 
-    let mut block = 0u64;
+    let mut attack_mask = bitboard::mask_rook_attacks(square);
 
-    let block_square = bitboard::Squares::E3 as u8;
-    set_bit!(block, block_square);
+    bitboard::set_occupancy(100, count_bits!(attack_mask), attack_mask);
 
-    let block_square = bitboard::Squares::G5 as u8;
-    set_bit!(block, block_square);
-
-    let block_square = bitboard::Squares::E7 as u8;
-    set_bit!(block, block_square);
-
-    let block_square = bitboard::Squares::C5 as u8;
-    set_bit!(block, block_square);
-
-    bitboard::print_bitboard(bitboard::rook_attacks_on_the_fly(square,block));
-
-    println!("Runtime: {} μs", now.elapsed().as_micros());
-
+    println!("Runtime: {} ns", now.elapsed().as_nanos());
 }
